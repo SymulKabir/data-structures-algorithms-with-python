@@ -55,6 +55,10 @@ def dijkstra(matrix, start):
         # Step 3: update neighbors
         for neighbor in range(n):
             weight = matrix[current_node][neighbor]
+            print("======= start ==========")
+            print("current_node --->>", current_node)
+            print("neighbor --->>", neighbor)
+            print("weight --->>", weight)
 
             if weight > 0 and not visited[neighbor]:
                 new_distance = distances[current_node] + weight
@@ -72,6 +76,8 @@ def dijkstra(matrix, start):
 
 
 result = dijkstra(adjacency_matrix, 0)
+
+print('result ->>>', result)
 
 # for node, distance in enumerate(result):
 #     print(f"0 -> {node}: {distance}")
