@@ -1,19 +1,3 @@
-# Graph represented by your adjacency matrix:
-#       (5)
-#     0 ------- 1
-#     |         |
-#  (2)|         |(4)
-#     |         |
-#     2 ------- 3
-#       (7)
-
-
-# From This graph the adjacency matrix output will be
-#   [0, 5, 2, 0],  # Roads starting from Node 0
-#   [5, 0, 0, 4],  # Roads starting from Node 1
-#   [2, 0, 0, 7],  # Roads starting from Node 2
-#   [0, 4, 7, 0]   # Roads starting from Node 3
-
 import csv
 
 FILE_NAME = 'routes.csv'
@@ -87,21 +71,49 @@ def calculate_node_degrees(matrix):
         
 calculate_node_degrees(adjacency_matrix)
 
+def dijkstra_shortest_path(matrix, start_node):
+    num_nodes = len(matrix)
+    unknown_number = float('inf')
+    # unknown_number = 10000
+    
 
-def traverse_graph_bfs(matrix, start_node):
-    visited = []
-    quea = [start_node]
-    while quea:
-        current = quea.pop(0)
-        if current not in visited:
-            visited.append(current)
-            for neighbor, road in enumerate(matrix[current]):
-                if road > 0 and neighbor not in visited:
-                    quea.append(neighbor)
-        
+    # Start by assuming all distances are unknown/infinity
+    distances = [unknown_number] * num_nodes
+    distances[start_node] = 0 # Distance to your starting point is 0
+    print("distances ---->>>", distances)
 
-    return visited
+    visited = [False] * num_nodes
+    print("visited --->>", visited)
 
-# Let's see the order in which BFS visits the nodes
-visit_order = traverse_graph_bfs(adjacency_matrix, start_node=0)
-print(f"BFS Traversal Order: {visit_order}")
+    for _ in range(num_nodes):
+        # Find the node with the shortest known distance that we haven't visited yet
+        min_dist = unknown_number
+        current_node = -1
+
+        for node in range(num_nodes):
+            if not visited[node] and distances[node] < min_dist:
+                min_dist = distances[node]
+                current_node = node
+
+        # Mark this node as finished
+        visited[current_node] = True
+
+        # Look at all neighbors of this node and update their distances
+        for neighbor, road_length in enumerate(matrix[current_node]):
+            if road_length > 0 and not visited[neighbor]:
+                new_distance = distances[current_node] + road_length
+
+                # If this new path is a shortcut, save it!
+                if new_distance < distances[neighbor]:
+                    distances[neighbor] = new_distance
+
+    return distances
+
+# Calculate shortest paths starting from Node 0
+shortest_routes = dijkstra_shortest_path(adjacency_matrix, start_node=0)
+
+print("shortest_routes --->>>", shortest_routes)
+
+print("--- Shortest Travel Distances From Node 0 ---")
+for node, distance in enumerate(shortest_routes):
+    print(f"Shortest distance to Node {node}: {distance} miles/km")
